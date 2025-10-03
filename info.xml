@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<extension key="com.skvare.customtabgrouping" type="module">
+  <file>customtabgrouping</file>
+  <name>Custom Tab Grouping</name>
+  <description>Allow multiple custom field groups to be displayed in the same tab on contact summary page</description>
+  <license>AGPL-3.0</license>
+  <maintainer>
+    <author>FIXME</author>
+    <email>FIXME</email>
+  </maintainer>
+  <urls>
+    <url desc="Main Extension Page">http://FIXME</url>
+    <url desc="Documentation">http://FIXME</url>
+    <url desc="Support">http://FIXME</url>
+    <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
+  </urls>
+  <releaseDate>2025-10-03</releaseDate>
+  <version>1.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>6.6</ver>
+  </compatibility>
+  <comments>Enables grouping of multiple custom field groups into a single tab</comments>
+  <classloader>
+    <psr0 prefix="CRM_" path="."/>
+    <psr4 prefix="Civi\" path="Civi"/>
+  </classloader>
+  <civix>
+    <namespace>CRM/Customtabgrouping</namespace>
+    <format>23.02.1</format>
+    <angularModule>crmCustomtabgrouping</angularModule>
+  </civix>
+  <mixins>
+    <mixin>mgd-php@1.0.0</mixin>
+    <mixin>setting-php@1.0.0</mixin>
+    <mixin>smarty-v2@1.0.1</mixin>
+    <mixin>menu-xml@1.0.0</mixin>
+  </mixins>
+  <upgrader>CRM_Customtabgrouping_Upgrader</upgrader>
+</extension>

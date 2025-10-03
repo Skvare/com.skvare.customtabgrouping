@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/contact/view/custom-grouped</path>
+    <page_callback>CRM_Customtabgrouping_Page_CustomGrouped</page_callback>
+    <title>CustomGrouped</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
