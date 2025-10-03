@@ -103,38 +103,6 @@ COMMENT 'Name of the tab where this custom group should appear';
 
 This column is automatically added during installation and removed (optionally) during uninstallation.
 
-### Hooks Implemented
-
-- `hook_civicrm_buildForm`: Adds the tab name field to custom group form
-- `hook_civicrm_postProcess`: Saves the tab name value
-- `hook_civicrm_tabs`: Groups custom field groups with the same tab name
-- `hook_civicrm_alterMenu`: Registers the custom grouped tab page
-
-### File Structure
-
-```
-com.example.customtabgrouping/
-├── info.xml                                    # Extension metadata
-├── customtabgrouping.php                       # Main extension file with hooks
-├── customtabgrouping.civix.php                 # Civix auto-generated functions
-├── CRM/
-│   └── Customtabgrouping/
-│       └── Page/
-│           └── CustomGrouped.php               # Page to display grouped custom fields
-├── templates/
-│   └── CRM/
-│       └── Customtabgrouping/
-│           ├── CustomGrouped.tpl               # Template for grouped display
-│           └── CustomGroupFormExtra.tpl        # Template for form enhancement
-└── README.md                                   # This file
-```
-
-## Compatibility
-
-- **CiviCRM Version**: 5.0 or higher
-- **PHP Version**: 7.2 or higher (recommended 7.4+)
-- **Database**: MySQL 5.7+ or MariaDB 10.2+
-
 ## Known Issues & Limitations
 
 1. Currently only works for Contact custom groups (can be extended to other entities)
@@ -168,14 +136,6 @@ The extension needs permission to alter the database schema. Ensure your CiviCRM
 
 **Note**: Uninstalling will remove the `tab_name` column from the database. Any tab name values will be lost.
 
-## Development
-
-### Requirements for Development
-
-- CiviCRM development environment
-- Git
-- Basic understanding of CiviCRM hooks and Smarty templating
-
 ### Testing
 
 1. Create multiple custom field groups
@@ -184,26 +144,3 @@ The extension needs permission to alter the database schema. Ensure your CiviCRM
 4. Verify all grouped fields appear in single tab
 5. Test edit functionality for each group
 6. Test with different field types (text, date, select, etc.)
-
-## Support
-
-For issues, feature requests, or contributions:
-- Create an issue in the repository
-- Contact: info@example.com
-
-## License
-
-This extension is licensed under [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html).
-
-## Credits
-
-Developed by [Your Organization]
-
-## Changelog
-
-### Version 1.0.0 (2025-10-03)
-- Initial release
-- Added tab_name field to custom group settings
-- Implemented grouped tab display
-- Added collapsible accordion interface
-- Edit functionality for each custom group section
