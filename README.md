@@ -7,6 +7,7 @@ This extension allows you to group multiple custom field groups into a single ta
 ## Features
 
 - **Tab Name Field**: Adds a "Tab Name" field to custom group settings
+- **Order within Tab**: Allows setting the order of groups within the same tab
 - **Automatic Grouping**: Multiple custom groups with the same tab name are automatically grouped together
 - **Collapsible Sections**: Each custom group within a tab is displayed as a collapsible accordion for better organization
 - **Edit Links**: Quick edit buttons for each custom group section
@@ -60,8 +61,9 @@ cv en customtabgrouping
 
 3. In the custom group settings:
     - Set **Used For**: Contacts (or appropriate entity)
-    - Set **Display Style**: Tab
+    - Set **Display Style**: Tab or Tab with table
     - Enter a **Tab Name**: e.g., "Other Stuff"
+    - (Optional) Set **Order within Tab** to control the order of groups within the tab
     - Save the custom group
 
 4. Repeat for other custom groups you want to group together, using the **same Tab Name**
@@ -97,8 +99,12 @@ The extension adds one column to the `civicrm_custom_group` table:
 
 ```sql
 ALTER TABLE civicrm_custom_group 
-ADD COLUMN tab_name VARCHAR(255) NULL DEFAULT NULL 
-COMMENT 'Name of the tab where this custom group should appear';
+  ADD COLUMN tab_name VARCHAR(255) NULL DEFAULT NULL 
+  COMMENT 'Name of the tab where this custom group should appear';
+
+ALTER TABLE civicrm_custom_group
+  ADD COLUMN tab_group_order int NOT NULL DEFAULT '1' 
+  COMMENT 'Controls display order when multiple groups share the same tab'
 ```
 
 This column is automatically added during installation and removed (optionally) during uninstallation.
@@ -120,7 +126,7 @@ This column is automatically added during installation and removed (optionally) 
 ### Grouped tabs not showing
 
 1. Verify all custom groups have exactly the same tab name (case-sensitive)
-2. Ensure Display Style is set to "Tab" for all groups
+2. Ensure Display Style is set to "Tab" Or "Tab with table" for groups you want to show in the tab
 3. Clear browser cache and CiviCRM cache
 4. Check that custom groups are active
 
@@ -134,13 +140,14 @@ The extension needs permission to alter the database schema. Ensure your CiviCRM
 2. Find "Custom Tab Grouping" and click **Disable**
 3. Click **Uninstall**
 
-**Note**: Uninstalling will remove the `tab_name` column from the database. Any tab name values will be lost.
+**Note**: Uninstalling will remove the `tab_name` and `tab_group_order` columns from the database. Any tab name values will be lost.
 
 ### Testing
 
 1. Create multiple custom field groups
 2. Assign same tab name to multiple groups
-3. View contact summary page
-4. Verify all grouped fields appear in single tab
-5. Test edit functionality for each group
-6. Test with different field types (text, date, select, etc.)
+3. Assign Order within Tab
+4. View contact summary page
+5. Verify all grouped fields appear in single tab
+6. Test edit functionality for each group
+7. Test with different field types (text, date, select, etc.)
