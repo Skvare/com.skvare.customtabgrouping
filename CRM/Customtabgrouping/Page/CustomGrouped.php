@@ -11,11 +11,20 @@ class CRM_Customtabgrouping_Page_CustomGrouped extends CRM_Core_Page {
    */
   public function run() {
     $contactId = CRM_Utils_Request::retrieve('cid', 'Positive', $this, TRUE);
-    $groupIdsString = CRM_Utils_Request::retrieve('group_ids', 'String', $this, TRUE);
+    $groupIds = CRM_Utils_Request::retrieve('group_ids', 'String', $this, TRUE);
 
-    // Parse group IDs
-    $groupIds = explode(',', $groupIdsString);
-    $groupIds = array_map('intval', $groupIds);
+    // Convert comma-separated group IDs to array
+    $groupIdArray = explode(',', $groupIds);
+    $groupIdArray = array_map('intval', $groupIdArray);
+    $groupIdArray = array_filter($groupIdArray);
+    if (empty($groupIdArray)) {
+      CRM_Core_Error::statusBounce(ts('No custom groups specified.'));
+    }
+
+    // Verify contact access
+    if (!CRM_Contact_BAO_Contact_Permission::allow($contactId)) {
+      CRM_Core_Error::statusBounce(ts('You do not have permission to access this contact.'));
+    }
 
     // Get contact details
     try {
@@ -32,7 +41,7 @@ class CRM_Customtabgrouping_Page_CustomGrouped extends CRM_Core_Page {
 
     // Build custom group data for each group
     $customGroups = [];
-    foreach ($groupIds as $groupId) {
+    foreach ($groupIdArray as $groupId) {
       try {
         // Get custom group details
         $group = civicrm_api3('CustomGroup', 'getsingle', [

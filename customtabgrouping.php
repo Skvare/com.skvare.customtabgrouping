@@ -171,7 +171,7 @@ function customtabgrouping_civicrm_tabset($tabsetName, &$tabs, $context) {
 
   // Build the extends criteria based on contact type
   $extendsTypes = ['Contact']; // Always include generic Contact
-
+  $extendsSubTypes = [];
   // Add specific contact type
   if (!empty($contactType)) {
     $extendsTypes[] = $contactType;
@@ -180,20 +180,25 @@ function customtabgrouping_civicrm_tabset($tabsetName, &$tabs, $context) {
   // Add contact sub-types if any
   if (!empty($contactSubType)) {
     if (is_array($contactSubType)) {
-      $extendsTypes = array_merge($extendsTypes, $contactSubType);
+      $extendsSubTypes = array_merge($extendsSubTypes, $contactSubType);
     }
     else {
-      $extendsTypes[] = $contactSubType;
+      $extendsSubTypes[] = $contactSubType;
     }
   }
 
   // Get all custom groups with tab_name set for this contact type
   try {
-    $customGroups = civicrm_api3('CustomGroup', 'get', [
+    $inputParams = [
       'extends' => ['IN' => $extendsTypes],
       'is_active' => 1,
       'options' => ['limit' => 0],
-    ]);
+      'tab_name' => ['IS NOT NULL' => 1, '!=' => '' ],
+    ];
+    if (!empty($extendsSubTypes)) {
+      $inputParams['extends_sub_type'] = ['IN' => $extendsSubTypes];
+    }
+    $customGroups = civicrm_api3('CustomGroup', 'get', $inputParams);
   }
   catch (Exception $e) {
     return;
