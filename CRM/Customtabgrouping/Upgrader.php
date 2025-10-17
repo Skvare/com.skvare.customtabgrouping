@@ -47,4 +47,20 @@ class CRM_Customtabgrouping_Upgrader extends CRM_Extension_Upgrader_Base {
     }
   }
 
+  /**
+   * Example: Run a couple simple queries.
+   *
+   * @return TRUE on success
+   * @throws CRM_Core_Exception
+   */
+  public function upgrade_1100(): bool {
+    $this->ctx->log->info('Applying update 4200');
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'tab_group_order')) {
+      CRM_Core_DAO::executeQuery("
+        ALTER TABLE civicrm_custom_group
+        ADD COLUMN tab_group_order int NOT NULL DEFAULT '1' COMMENT 'Controls display order when multiple groups share the same tab'
+      ");
+    }
+    return TRUE;
+  }
 }
