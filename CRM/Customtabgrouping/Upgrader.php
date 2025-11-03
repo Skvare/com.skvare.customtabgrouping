@@ -29,6 +29,20 @@ class CRM_Customtabgrouping_Upgrader extends CRM_Extension_Upgrader_Base {
         ADD COLUMN tab_group_order int NOT NULL DEFAULT '1' COMMENT 'Controls display order when multiple groups share the same tab'
       ");
     }
+
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'layout_width')) {
+      CRM_Core_DAO::executeQuery("
+      ALTER TABLE civicrm_custom_group
+      ADD COLUMN layout_width VARCHAR(10) NOT NULL DEFAULT '100' COMMENT 'Width of custom group display (25, 33, 50, or 100)'
+    ");
+    }
+
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'layout_float')) {
+      CRM_Core_DAO::executeQuery("
+      ALTER TABLE civicrm_custom_group
+      ADD COLUMN layout_float VARCHAR(10) NOT NULL DEFAULT 'none' COMMENT 'Floating behavior for custom group (none, left, right, both)'
+    ");
+    }
   }
 
 
@@ -45,6 +59,14 @@ class CRM_Customtabgrouping_Upgrader extends CRM_Extension_Upgrader_Base {
     if (CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'tab_group_order')) {
       CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_custom_group DROP COLUMN tab_group_order");
     }
+
+    if (CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'layout_width')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_custom_group DROP COLUMN layout_width");
+    }
+
+    if (CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'layout_float')) {
+      CRM_Core_DAO::executeQuery("ALTER TABLE civicrm_custom_group DROP COLUMN layout_float");
+    }
   }
 
   /**
@@ -54,13 +76,32 @@ class CRM_Customtabgrouping_Upgrader extends CRM_Extension_Upgrader_Base {
    * @throws CRM_Core_Exception
    */
   public function upgrade_1100(): bool {
-    $this->ctx->log->info('Applying update 4200');
+    $this->ctx->log->info('Applying update 1100');
     if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'tab_group_order')) {
       CRM_Core_DAO::executeQuery("
         ALTER TABLE civicrm_custom_group
         ADD COLUMN tab_group_order int NOT NULL DEFAULT '1' COMMENT 'Controls display order when multiple groups share the same tab'
       ");
     }
+    return TRUE;
+  }
+
+  public function upgrade_1101(): bool {
+    $this->ctx->log->info('Applying update 1101');
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'layout_width')) {
+      CRM_Core_DAO::executeQuery("
+      ALTER TABLE civicrm_custom_group
+      ADD COLUMN layout_width VARCHAR(10) NOT NULL DEFAULT '100' COMMENT 'Width of custom group display (25, 33, 50, or 100)'
+      ");
+    }
+
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_custom_group', 'layout_float')) {
+      CRM_Core_DAO::executeQuery("
+      ALTER TABLE civicrm_custom_group
+      ADD COLUMN layout_float VARCHAR(10) NOT NULL DEFAULT 'none' COMMENT 'Floating behavior for custom group (none, left, right, both)'
+      ");
+    }
+
     return TRUE;
   }
 }

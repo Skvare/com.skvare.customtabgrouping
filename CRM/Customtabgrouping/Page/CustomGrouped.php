@@ -61,18 +61,55 @@ class CRM_Customtabgrouping_Page_CustomGrouped extends CRM_Core_Page {
           'id' => $groupId,
           'title' => $group['title'],
           'url' => $groupUrl,
+          // Adjust for padding/margin.
+          'layout_width' => $group['layout_width'] ? $group['layout_width'] - 3 : '98',
+          // Default to 'none' if not set
+          'layout_float' => $group['layout_float'] ?? 'none',
         ];
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         CRM_Core_Error::debug_log_message('Error loading custom group ' . $groupId . ': ' . $e->getMessage());
       }
     }
 
     $this->assign('customGroups', $customGroups);
+    $this->assign('layoutMode', 'width-' . $this->getAverageLayoutWidth($customGroups));
+    $this->assign('floatMode', $this->determinePrimaryFloatMode($customGroups));
 
     // Set page title
     CRM_Utils_System::setTitle(ts('Custom Fields'));
 
     parent::run();
+  }
+
+  // Helper methods to determine overall layout
+  private function getAverageLayoutWidth($groups) {
+    if (empty($groups)) {
+      return '100';
+    }
+    $widths = array_column($groups, 'layout_width');
+    $avgWidth = array_sum($widths) / count($widths);
+
+    $layouts = ['25', '33', '50', '100'];
+
+    // Simple approach to find closest width
+    $closestLayout = '100'; // default
+    $smallestDiff = PHP_FLOAT_MAX;
+
+    foreach ($layouts as $layout) {
+      $diff = abs($layout - $avgWidth);
+      if ($diff < $smallestDiff) {
+        $smallestDiff = $diff;
+        $closestLayout = $layout;
+      }
+    }
+
+    return $closestLayout;
+  }
+
+  private function determinePrimaryFloatMode($groups) {
+    $floatCounts = array_count_values(array_column($groups, 'layout_float'));
+    return $floatCounts['both'] ?? $floatCounts['left'] ?? $floatCounts['right'] ?? 'none';
   }
 
   /**

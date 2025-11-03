@@ -11,6 +11,22 @@
       <div class="description">{ts}Controls the display order of this group within the tab (lower numbers appear first).{/ts}</div>
     </td>
   </tr>
+  <tr class="crm-section layout-width-section">
+    <td class="label">{$form.layout_width.label}</td>
+    <td>
+        {$form.layout_width.html}
+      <div class="description">{ts}Controls the column width for grouped custom group layout{/ts}</div>
+    </td>
+  </tr>
+
+    {* New Layout Float Section *}
+  <tr class="crm-section layout-float-section">
+    <td class="label">{$form.layout_float.label}</td>
+    <td>
+        {$form.layout_float.html}
+      <div class="description">{ts}Determines how the custom group is positioned within the tab{/ts}</div>
+    </td>
+  </tr>
 </table>
 {literal}
 <script type="text/javascript">
@@ -21,6 +37,8 @@
       // Insert after style field
       $('.tab-name-section').insertAfter('.field-style');
       $('.tab-group-order-section').insertAfter('.tab-name-section');
+      $('.layout-width-section').insertAfter('.tab-group-order-section');
+      $('.layout-float-section').insertAfter('.layout-width-section');
 
       // Get existing values if present
       var existingTabName = $('input[name="tab_name"]').val();
@@ -33,48 +51,16 @@
         $('#tab_group_order').val(existingTabGroupOrder);
       }
 
-      // Show/hide tab name and order fields based on style selection
-      function toggleTabFields() {
-        var styleValue = $('select[name="style"]').val();
-        if (styleValue === 'Tab' || styleValue === 'Tab with table' || styleValue === 'Inline') {
-          $('.tab-name-section').slideDown();
-
-          // Only show tab_group_order if tab_name has a value
-          var tabNameValue = $('#tab_name').val();
-          if (tabNameValue && tabNameValue.trim() !== '') {
-            $('.tab-group-order-section').slideDown();
-          } else {
-            $('.tab-group-order-section').slideUp();
-          }
-        } else {
-          $('.tab-name-section').slideUp();
-          $('.tab-group-order-section').slideUp();
-          $('#tab_name').val('');
+      // Show/hide tab_group_order based on tab_name value
+      function toggleTabGroupOrder() {
+        var tabNameValue = $('#tab_name').val();
+        if (!tabNameValue || tabNameValue.trim() === '') {
           $('#tab_group_order').val('1');
         }
       }
 
-      // Show/hide tab_group_order based on tab_name value
-      function toggleTabGroupOrder() {
-        var tabNameValue = $('#tab_name').val();
-        var styleValue = $('select[name="style"]').val();
-
-        if ((styleValue === 'Tab' || styleValue === 'Tab with table' || styleValue === 'Inline') &&
-          tabNameValue && tabNameValue.trim() !== '') {
-          $('.tab-group-order-section').slideDown();
-        } else {
-          $('.tab-group-order-section').slideUp();
-          if (!tabNameValue || tabNameValue.trim() === '') {
-            $('#tab_group_order').val('1');
-          }
-        }
-      }
-
-      // Initial state
-      toggleTabFields();
 
       // Watch for changes
-      $('select[name="style"]').on('change', toggleTabFields);
       $('#tab_name').on('input change', toggleTabGroupOrder);
 
       // Validate tab_group_order input (only allow positive integers)
@@ -100,16 +86,26 @@
       $('.tab-group-order-section').after($infoBox);
 
       function toggleInfoBox() {
-        var styleValue = $('select[name="style"]').val();
-        if (styleValue === 'Tab' || styleValue === 'Tab with table') {
-          $infoBox.slideDown();
-        } else {
-          $infoBox.slideUp();
-        }
+        $infoBox.slideDown();
       }
 
       toggleInfoBox();
       $('select[name="style"]').on('change', toggleInfoBox);
+
+      // Validate float/width interaction
+      $('#layout_float, #layout_width').on('change', function() {
+        var width = $('#layout_width').val();
+        var floatVal = $('#layout_float').val();
+
+        // Warn about float with full width
+        if (width === '100' && floatVal !== 'none') {
+          CRM.alert(
+            'Floating may not be effective with full-width layout',
+            'Layout Compatibility',
+            'warning'
+          );
+        }
+      });
     }
   });
 </script>

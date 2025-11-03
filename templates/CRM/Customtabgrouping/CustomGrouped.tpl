@@ -1,12 +1,13 @@
 {* Template for displaying multiple custom field groups in one tab *}
 {* Loads CiviCRM's native custom data display via AJAX *}
 
-<div class="crm-block crm-content-block crm-custom-data-grouped">
+<div class="crm-block crm-content-block crm-custom-data-grouped layout-{$layoutMode} float-{$floatMode}">
 
     {if $customGroups}
         {foreach from=$customGroups item=group name=groupLoop}
+          <div class="custom-group" data-width="{$group.layout_width}" data-float="{$group.layout_float}"style="width: {$group.layout_width}%;float: {if $group.layout_float == 'left'}left{elseif $group.layout_float == 'right'}right{else}none{/if};">
           <div class="crm-block crm-content-block crm-records-listing crm-multivalue-selector-{$group.id}">
-            <div class="crm-accordion-wrapper crm-custom-accordion {if $smarty.foreach.groupLoop.first}open{else}collapsed{/if}" data-group-id="{$group.id}">
+            <div class="crm-accordion-wrapper crm-custom-accordion collapsed" data-group-id="{$group.id}">
               <div class="crm-accordion-header">
                 <span class="crm-custom-group-title">{$group.title}</span>
               </div>
@@ -23,6 +24,7 @@
               </div>
             </div>
           </div>
+          </div>
         {/foreach}
     {else}
       <div class="messages status no-popup">
@@ -38,6 +40,19 @@
   <style>
     .crm-custom-data-grouped {
       margin: 20px 0;
+    }
+    .crm-custom-data-grouped {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .crm-custom-data-grouped.float-left .custom-group[data-float="left"] {
+      float: left;
+    }
+
+    .crm-custom-data-grouped.float-right .custom-group[data-float="right"] {
+      float: right;
     }
 
     .crm-custom-accordion {
@@ -96,6 +111,13 @@
 
     .crm-loading-element .fa-spinner {
       margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .crm-custom-data-grouped .custom-group {
+        width: 100% !important;
+        float: none !important;
+      }
     }
   </style>
 

@@ -66,6 +66,13 @@ function customtabgrouping_civicrm_buildForm($formName, &$form) {
       FALSE
     );
 
+    $layoutWidth = CRM_Customtabgrouping_Utils::getLayoutWidth();
+    $form->add('select', 'layout_width', E::ts('Layout Width'), $layoutWidth, FALSE);
+
+    // Layout Float Field
+    $floatStyle = CRM_Customtabgrouping_Utils::getLayoutFloatStyle();
+    $form->add('select', 'layout_float', E::ts('Layout Float'), $floatStyle, FALSE);
+
     // Set default values if editing existing group
     if ($form->getAction() == CRM_Core_Action::UPDATE) {
       $groupId = $form->getVar('_id');
@@ -73,7 +80,7 @@ function customtabgrouping_civicrm_buildForm($formName, &$form) {
         try {
           $customGroup = civicrm_api3('CustomGroup', 'getsingle', [
             'id' => $groupId,
-            'return' => ['tab_name', 'tab_group_order'],
+            'return' => ['tab_name', 'tab_group_order', 'layout_width', 'layout_float'],
           ]);
 
           $defaults = [];
@@ -82,6 +89,13 @@ function customtabgrouping_civicrm_buildForm($formName, &$form) {
           }
           if (!empty($customGroup['tab_group_order'])) {
             $defaults['tab_group_order'] = $customGroup['tab_group_order'];
+          }
+
+          if (!empty($customGroup['layout_width'])) {
+            $defaults['layout_width'] = $customGroup['layout_width'];
+          }
+          if (!empty($customGroup['layout_float'])) {
+            $defaults['layout_float'] = $customGroup['layout_float'];
           }
 
           if (!empty($defaults)) {
@@ -94,7 +108,13 @@ function customtabgrouping_civicrm_buildForm($formName, &$form) {
     }
     else {
       // Set default value for new groups
-      $form->setDefaults(['tab_group_order' => 1]);
+      $form->setDefaults(
+        [
+          'tab_group_order' => 1,
+          'layout_width' => '100',
+          'layout_float' => 'none',
+        ]
+      );
     }
 
     // Add help text and styling via template
@@ -117,6 +137,8 @@ function customtabgrouping_civicrm_postProcess($formName, &$form) {
     if ($groupId) {
       $tabName = $values['tab_name'] ?? NULL;
       $tabGroupOrder = $values['tab_group_order'] ?? 1;
+      $layoutWidth = $values['layout_width'] ?? '100';
+      $layoutFloat = $values['layout_float'] ?? 'none';
 
       // Ensure tab_group_order is an integer
       $tabGroupOrder = (int) $tabGroupOrder;
@@ -126,12 +148,14 @@ function customtabgrouping_civicrm_postProcess($formName, &$form) {
 
       CRM_Core_DAO::executeQuery("
         UPDATE civicrm_custom_group 
-        SET tab_name = %1, tab_group_order = %2
-        WHERE id = %3
+        SET tab_name = %1, tab_group_order = %2, layout_width = %3, layout_float = %4
+        WHERE id = %5
       ", [
         1 => [$tabName, 'String'],
         2 => [$tabGroupOrder, 'Integer'],
-        3 => [$groupId, 'Integer'],
+        3 => [$layoutWidth, 'String'],
+        4 => [$layoutFloat, 'String'],
+        5 => [$groupId, 'Integer'],
       ]);
 
       // Clear cache
@@ -330,6 +354,54 @@ function customtabgrouping_civicrm_entityTypes(&$entityTypes) {
       'html' => [
         'type' => 'Text',
         'label' => ts("Custom Group Order in Tab"),
+      ],
+    ];
+
+    $fields['layout_width'] = [
+      'name' => 'layout_width',
+      'type' => CRM_Utils_Type::T_STRING,
+      'title' => ts('Layout Width'),
+      'description' => 'layout width.',
+      'localizable' => 0,
+      'maxlength' => 10,
+      'size' => CRM_Utils_Type::HUGE,
+      'import' => TRUE,
+      'where' => 'civicrm_custom_group.layout_width',
+      'export' => TRUE,
+      'table_name' => 'civicrm_custom_group',
+      'entity' => 'CustomGroup',
+      'bao' => 'CRM_Core_BAO_CustomGroup',
+      'localizable' => 1,
+      'html' => [
+        'type' => 'Select',
+        'label' => ts("Layout Width"),
+      ],
+      'pseudoconstant' => [
+        'callback' => 'CRM_Customtabgrouping_Utils::getLayoutWidth',
+      ],
+    ];
+
+    $fields['layout_float'] = [
+      'name' => 'layout_float',
+      'type' => CRM_Utils_Type::T_STRING,
+      'title' => ts('Layout Float'),
+      'description' => 'The float option allows more flexible positioning of custom field groups',
+      'localizable' => 0,
+      'maxlength' => 10,
+      'size' => CRM_Utils_Type::HUGE,
+      'import' => TRUE,
+      'where' => 'civicrm_custom_group.layout_float',
+      'export' => TRUE,
+      'table_name' => 'civicrm_custom_group',
+      'entity' => 'CustomGroup',
+      'bao' => 'CRM_Core_BAO_CustomGroup',
+      'localizable' => 1,
+      'html' => [
+        'type' => 'Select',
+        'label' => ts("Layout Float"),
+      ],
+      'pseudoconstant' => [
+        'callback' => 'CRM_Customtabgrouping_Utils::getLayoutFloatStyle',
       ],
     ];
   };
