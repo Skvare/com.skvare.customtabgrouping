@@ -6,24 +6,24 @@
     {if $customGroups}
         {foreach from=$customGroups item=group name=groupLoop}
           <div class="custom-group" data-width="{$group.layout_width}" data-float="{$group.layout_float}"style="width: {$group.layout_width}%;float: {if $group.layout_float == 'left'}left{elseif $group.layout_float == 'right'}right{else}none{/if};">
-          <div class="crm-block crm-content-block crm-records-listing crm-multivalue-selector-{$group.id}">
-            <div class="crm-accordion-wrapper crm-custom-accordion collapsed" data-group-id="{$group.id}">
-              <div class="crm-accordion-header">
-                <span class="crm-custom-group-title">{$group.title}</span>
-              </div>
+            <div class="crm-block crm-content-block crm-records-listing crm-multivalue-selector-{$group.id}">
+              <div class="crm-accordion-wrapper crm-custom-accordion collapsed" data-group-id="{$group.id}">
+                <div class="crm-accordion-header">
+                  <span class="crm-custom-group-title">{$group.title}</span>
+                </div>
 
-              <div class="crm-accordion-body">
-                  {* Container where native CiviCRM content will be loaded *}
-                <div class="crm-custom-data-content"
-                     id="custom-group-{$group.id}"
-                     data-load-url="{$group.url}">
-                  <div class="crm-loading-element">
-                    <span class="crm-i fa-spinner fa-spin"></span> {ts}Loading...{/ts}
+                <div class="crm-accordion-body">
+                    {* Container where native CiviCRM content will be loaded *}
+                  <div class="crm-custom-data-content"
+                       id="custom-group-{$group.id}"
+                       data-load-url="{$group.url}" style="overflow-x: auto;">
+                    <div class="crm-loading-element">
+                      <span class="crm-i fa-spinner fa-spin"></span> {ts}Loading...{/ts}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
         {/foreach}
     {else}
