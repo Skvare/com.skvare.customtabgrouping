@@ -6,12 +6,26 @@ This extension allows you to group multiple custom field groups into a single ta
 
 ## Features
 
+### 1. Tab Name Grouping
 - **Tab Name Field**: Adds a "Tab Name" field to custom group settings
 - **Order within Tab**: Allows setting the order of groups within the same tab
 - **Automatic Grouping**: Multiple custom groups with the same tab name are automatically grouped together
 - **Collapsible Sections**: Each custom group within a tab is displayed as a collapsible accordion for better organization
 - **Edit Links**: Quick edit buttons for each custom group section
 - **Backwards Compatible**: Doesn't affect existing custom groups without tab names
+
+### 2. Advanced Layout Options
+#### Layout Width
+- **Full Width (100%)**: Traditional stacked layout
+- **Half Width (50%)**: Two-column display
+- **Third Width (33%)**: Three-column grid
+- **Quarter Width (25%)**: Four-column compact view
+
+#### Layout Float
+- **Stack (Default)**: Traditional vertical arrangement
+- **Float Left**: Position groups to the left side
+- **Float Right**: Position groups to the right side
+- **Allow Float**: Maximum layout flexibility
 
 ## Use Case Example
 
@@ -22,10 +36,12 @@ This extension allows you to group multiple custom field groups into a single ta
 - Result: Too many tabs cluttering the contact summary page
 
 **After this extension:**
-- Custom Group "Contact Extras" → Tab Name: "Other Stuff"
-- Custom Group "More Contact Extras" → Tab Name: "Other Stuff"
-- Custom Group "Additional Info" → Tab Name: "Other Stuff"
+- Custom Group "Contact Extras" → Tab Name: "Other Stuff", Layout Width: Half (50%), Float: Left
+- Custom Group "More Contact Extras" → Tab Name: "Other Stuff", Layout Width: Half (50%)m  Float: Right
+- Custom Group "Additional Info" → Tab Name: "Other Stuff", Float: default
+
 - Result: All three groups display together in a single "Other Stuff" tab
+-  `Contact Extraa`, `More Contact Extras` with side-by-side groups
 
 ## Installation
 
@@ -95,7 +111,7 @@ All three groups will appear in a single "Other Stuff" tab on the contact summar
 
 ### Database Changes
 
-The extension adds one column to the `civicrm_custom_group` table:
+The extension adds two columns to the `civicrm_custom_group` table:
 
 ```sql
 ALTER TABLE civicrm_custom_group 
